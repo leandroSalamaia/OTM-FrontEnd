@@ -1,24 +1,8 @@
-# clientapp
+# client-OTM
+Este é o Client da ferramenta Open Transaction Manager, que se encontra no seguinte repostório https://github.com/hemerfc/otm.git
+
 
 ## Project setup
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
