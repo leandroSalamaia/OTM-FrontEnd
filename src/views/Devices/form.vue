@@ -301,49 +301,49 @@
             form: {
                 Name: {
                     required:requiredIf(function(){
-                        return this.connection == true
+                        return this.connection == true || this.form.Driver != 's7'
                     }),
                     minLength: minLength(3)
                 },
                 Ip: {
                     required:requiredIf(function(){
-                        return this.Driver == 'ptl'
+                        return this.form.Driver == 'ptl'
                     }),
                     minLength: minLength(8)
                 },
                 Port: {
                     required:requiredIf(function(){
-                        return this.Driver == 'ptl'
+                        return this.form.Driver == 'ptl'
                     }),
                     minLength: minLength(2)
                 },
                 MasterDevice: {
                     required:requiredIf(function(){
-                        return this.Driver == 'ptl'
+                        return this.form.Driver == 'ptl'
                     }),
                     minLength: minLength(3)
                 },
                 TestCardCode: {
                     required:requiredIf(function(){
-                        return this.Driver == 'ptl'
+                        return this.form.Driver == 'ptl'
                     }),
                     minLength: minLength(2)
                 },
                 Host: {
                     required:requiredIf(function(){
-                        return this.Driver == 's7'
+                        return this.form.Driver == 's7'
                     }),
                     minLength: minLength(3)
                 },
                 Slot: {
                     required:requiredIf(function(){
-                        return this.Driver == 's7'
+                        return this.form.Driver == 's7'
                     }),
                     minLength: minLength(1)
                 },
                 Rack: {
                     required:requiredIf(function(){
-                        return this.Driver == 's7'
+                        return this.form.Driver == 's7'
                     }),
                     minLength: minLength(1)
                 },
@@ -427,11 +427,17 @@
                     this.form.Id =  this.edit.id;
                     this.form.Name =  this.edit.name;
                     this.form.Driver =  this.edit.driver;
-                    this.form.Ip = conection_string[0].split('=').pop();
-                    this.form.Port = conection_string[1].split('=').pop();
-                    this.form.MasterDevice = conection_string[2].split('=').pop();
-                    this.form.HasReadGate = conection_string[3].split('=').pop().toLowerCase();
-                    this.form.TestCardCode = conection_string[4].split('=').pop();
+                    if(this.form.Driver == 's7'){
+                        this.form.Host = conection_string[0].split('=').pop();
+                        this.form.Slot = conection_string[1].split('=').pop();
+                        this.form.Rack = conection_string[2].split('=').pop();
+                    }else{
+                        this.form.Ip = conection_string[0].split('=').pop();
+                        this.form.Port = conection_string[1].split('=').pop();
+                        this.form.MasterDevice = conection_string[2].split('=').pop();
+                        this.form.HasReadGate = conection_string[3].split('=').pop().toLowerCase();
+                        this.form.TestCardCode = conection_string[4].split('=').pop();
+                    }
 
                     this.Dynamic_params.pop();
                     this.edit.tags.forEach(element => {
@@ -485,39 +491,48 @@
                 }
             },
             Submit(){
-                if(this.validateForm){
-                    this.Loader.showLoader = true;
-                    this.form.Config = "ip=" + this.form.Ip +";port=" + this.form.port +";MasterDevice="+ this.form.MasterDevice +";HasReadGate="+ this.form.HasReadGate +";TestCardCode="+this.form.TestCardCode+";";
-                    this.form.Tags = this.Dynamic_params;
-                    this.form.ContextName = this.$route.params.context;
-
-                    axios
-                        .post('/api/Device',JSON.stringify(this.form),{
-                            headers:{
-                                'Content-Type': 'application/json',
-                            }
-                        })
-                        .then(response => {
-                            this.Loader.showLoader = false;
-                            if(response.data.result){
-                                this.$swal({
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Sucesso...',
-                                    text: "Cadastrado com sucesso.",
-                                    willClose: () => {
-                                        location.reload();
-                                    }
-                                })
-                            }else{
-                                this.$swal({
-                                    position: 'top-end',
-                                    icon: 'error',
-                                    title: 'Erro...',
-                                    text: "Falha ao cadastrar device.",
-                                })
-                            }                           
-                        });
+                if(this.connection || this.form.Driver != 's7'){
+                    if(this.validateForm()){
+                        this.Loader.showLoader = true;
+                        this.form.Config = "ip=" + this.form.Ip +";port=" + this.form.port +";MasterDevice="+ this.form.MasterDevice +";HasReadGate="+ this.form.HasReadGate +";TestCardCode="+this.form.TestCardCode+";";
+                        this.form.Tags = this.Dynamic_params;
+                        this.form.ContextName = this.$route.params.context;
+    
+                        axios
+                            .post('/api/Device',JSON.stringify(this.form),{
+                                headers:{
+                                    'Content-Type': 'application/json',
+                                }
+                            })
+                            .then(response => {
+                                this.Loader.showLoader = false;
+                                if(response.data.result){
+                                    this.$swal({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Sucesso...',
+                                        text: "Cadastrado com sucesso.",
+                                        willClose: () => {
+                                            location.reload();
+                                        }
+                                    })
+                                }else{
+                                    this.$swal({
+                                        position: 'top-end',
+                                        icon: 'error',
+                                        title: 'Erro...',
+                                        text: "Falha ao cadastrar device.",
+                                    })
+                                }                           
+                            });
+                    }
+                }else{
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Erro...',
+                        text: "Conexão com Device não foi estabelecida.",
+                    })
                 }
             },
         },
