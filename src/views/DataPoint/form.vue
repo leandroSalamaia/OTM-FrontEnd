@@ -9,10 +9,10 @@
                                 
                                 <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                     <md-field :class="getValidationClass('Driver')">
-                                        <label>Driver</label>
-                                        <md-select name="Driver" id="Driver" v-model="form.Driver" md-dense :disabled="sending">
-                                            <md-option value="mssql">mssql</md-option>
-                                        </md-select>
+                                        <label v-if="form.Driver == null">Driver</label>
+                                        <select name="Driver" id="Driver" v-model="form.Driver" class="md-input" :disabled="sending">
+                                            <option value="mssql">mssql</option>
+                                        </select>
                                         <span class="md-error">Driver é obrigatório</span>
                                     </md-field>
                                 </div>
@@ -105,21 +105,21 @@
 
                                         <div class="md-layout-item md-size-20 md-small-size-100">
                                             <md-field :class="getValidationDynamicParamsClass('Mode',index)">
-                                                <label>Modo</label>
-                                                <md-select v-model="Dynamic_param.Mode.$model" id="Mode">
-                                                    <md-option value="FromOTM" selected>FromOTM</md-option>
-                                                    <md-option value="ToOTM">ToOTM</md-option>
-                                                </md-select>
+                                                <label v-if="Dynamic_param.Mode.$model == null">Modo</label>
+                                                <select v-model="Dynamic_param.Mode.$model" id="Mode" class="md-input">
+                                                    <option value="FromOTM" selected>FromOTM</option>
+                                                    <option value="ToOTM">ToOTM</option>
+                                                </select>
                                                 <span class="md-error" v-if="!Dynamic_param.Mode.required">Modo é um campo obrigatório</span>
                                             </md-field>
                                         </div>
 
                                         <div class="md-layout-item md-size-20 md-small-size-100">
                                             <md-field :class="getValidationDynamicParamsClass('TypeCode',index)">
-                                                <label>Formato</label>
-                                                <md-select  v-model="Dynamic_param.TypeCode.$model" id="TypeCode">
-                                                    <md-option v-for="typeCode in TypeCodes" :key="typeCode.code" :value="typeCode.code">{{typeCode.name}}</md-option>
-                                                </md-select>
+                                                <label v-if="Dynamic_param.TypeCode.$model == null">Formato</label>
+                                                <select  v-model="Dynamic_param.TypeCode.$model" id="TypeCode" class="md-input">
+                                                    <option v-for="typeCode in TypeCodes" :key="typeCode.code" :value="typeCode.code">{{typeCode.name}}</option>
+                                                </select>
                                                 <span class="md-error" v-if="!Dynamic_param.TypeCode.required">Formato é um campo obrigatório</span>
                                             </md-field>
                                         </div>
@@ -134,11 +134,11 @@
 
                                         <div class="md-layout-item md-size-10 md-small-size-100">
                                             <md-field :class="getValidationDynamicParamsClass('Direction',index)">
-                                                <label>Direction</label>
-                                                <md-select v-model="Dynamic_param.Direction.$model" id="Direction">
-                                                    <md-option value="1" selected>Input</md-option>
-                                                    <md-option value="2">Output</md-option>
-                                                </md-select>
+                                                <label v-if="Dynamic_param.Direction.$model == null">Direction</label>
+                                                <select v-model="Dynamic_param.Direction.$model" id="Direction" class="md-input">
+                                                    <option value="1" selected>Input</option>
+                                                    <option value="2">Output</option>
+                                                </select>
                                                 <span class="md-error" v-if="!Dynamic_param.Mode.required">Direction é um campo obrigatório</span>
                                             </md-field>
                                         </div>

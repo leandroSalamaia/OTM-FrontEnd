@@ -87,7 +87,14 @@
                     </md-list-item>
                 </md-list>
 
-
+                <!-- <md-list>
+                    <router-link :to="{ name: 'logs'}">
+                        <md-list-item>
+                            <md-icon><font-awesome-icon icon="clipboard-list" /></md-icon>
+                            <span class="md-list-item-text">Logs</span>
+                        </md-list-item>
+                    </router-link>
+                </md-list> -->
 
             </md-app-drawer>
 

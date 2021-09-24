@@ -9,11 +9,11 @@
                                 
                                 <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                     <md-field :class="getValidationClass('Driver')">
-                                        <label>Driver</label>
-                                        <md-select name="Driver" id="Driver" v-model="form.Driver" md-dense :disabled="sending">
-                                            <md-option value="ptl">ptl</md-option>
-                                            <md-option value="s7">s7</md-option>
-                                        </md-select>
+                                        <label v-if="form.Driver == null">Driver</label>
+                                        <select name="Driver" id="Driver" class="md-input" v-model="form.Driver">
+                                            <option value="ptl">ptl</option>
+                                            <option value="s7">s7</option>
+                                        </select>
                                         <span class="md-error">Driver é obrigatório</span>
                                     </md-field>
                                 </div>
@@ -119,46 +119,46 @@
                                     <div class="md-layout" v-for="(Dynamic_param,index) in $v.Dynamic_params.$each.$iter" :key="index">
 
                                         <div class="md-layout-item md-size-20 md-small-size-100">
+                                            <label>Nome</label>
                                             <md-field :class="getValidationDynamicParamsClass('Name',index)">
-                                                <label>Nome</label>
                                                 <md-input v-model.trim="Dynamic_param.Name.$model" autocomplete="Nome do parêmetro"/>
                                                 <span class="md-error" v-if="!Dynamic_param.Name.required">Nome é um campo obrigatório</span>
                                             </md-field>
                                         </div>
 
                                         <div class="md-layout-item md-size-20 md-small-size-100">
+                                            <label>Address</label>
                                             <md-field :class="getValidationDynamicParamsClass('Address',index)">
-                                                <label>Address</label>
                                                 <md-input v-model.trim="Dynamic_param.Address.$model" autocomplete="Nome do parêmetro"/>
                                                 <span class="md-error" v-if="!Dynamic_param.Address.required">Address é um campo obrigatório</span>
                                             </md-field>
                                         </div>
 
                                         <div class="md-layout-item md-size-10 md-small-size-100">
+                                            <label>Rate</label>
                                             <md-field :class="getValidationDynamicParamsClass('Rate',index)">
-                                                <label>Rate</label>
                                                 <md-input v-model.trim="Dynamic_param.Rate.$model" autocomplete="Nome do parêmetro"/>
                                                 <span class="md-error" v-if="!Dynamic_param.Rate.required">Rate é um campo obrigatório</span>
                                             </md-field>
                                         </div>
 
                                         <div class="md-layout-item md-size-20 md-small-size-100">
+                                            <label>Modo</label>
                                             <md-field :class="getValidationDynamicParamsClass('Mode',index)">
-                                                <label>Modo</label>
-                                                <md-select v-model="Dynamic_param.Mode.$model" id="Mode">
-                                                    <md-option value="FromOTM" selected>FromOTM</md-option>
-                                                    <md-option value="ToOTM">ToOTM</md-option>
-                                                </md-select>
+                                                <select v-model="Dynamic_param.Mode.$model" id="Mode" class="md-input">
+                                                    <option value="FromOTM" selected>FromOTM</option>
+                                                    <option value="ToOTM">ToOTM</option>
+                                                </select>
                                                 <span class="md-error" v-if="!Dynamic_param.Mode.required">Modo é um campo obrigatório</span>
                                             </md-field>
                                         </div>
 
                                         <div class="md-layout-item md-size-20 md-small-size-100">
+                                            <label>Formato</label>
                                             <md-field :class="getValidationDynamicParamsClass('TypeCode',index)">
-                                                <label>Formato</label>
-                                                <md-select  v-model="Dynamic_param.TypeCode.$model" id="TypeCode">
-                                                    <md-option v-for="typeCode in TypeCodes" :key="typeCode.code" :value="typeCode.code">{{typeCode.name}}</md-option>
-                                                </md-select>
+                                                <select  v-model="Dynamic_param.TypeCode.$model" id="TypeCode" class="md-input">
+                                                    <option v-for="typeCode in TypeCodes" :key="typeCode.code" :value="typeCode.code">{{typeCode.name}}</option>
+                                                </select>
                                                 <span class="md-error" v-if="!Dynamic_param.TypeCode.required">Formato é um campo obrigatório</span>
                                             </md-field>
                                         </div>

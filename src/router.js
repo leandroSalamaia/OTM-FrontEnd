@@ -5,6 +5,7 @@ import DataPoint from './views/DataPoint/DataPointView.vue'
 import ExecuteDataPoint from './views/DataPoint/ExecuteDataPointView.vue'
 import Devices from './views/Devices/DevicesView.vue'
 import Transactions from './views/Transactions/TransactionsView.vue'
+import Logs from './views/Logs/LogView.vue'
 
 Vue.use(Router);
 
@@ -36,6 +37,10 @@ export default new Router({
             name: 'transactions',
             component: Transactions
         },
-        
+        {
+            path: '/logs',
+            name: 'logs',
+            component: Logs
+        },
     ]
 })
