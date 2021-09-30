@@ -321,7 +321,7 @@
                     required:requiredIf(function(){
                         return this.form.Driver == 'ptl'
                     }),
-                    minLength: minLength(3)
+                    minLength: minLength(2)
                 },
                 TestCardCode: {
                     required:requiredIf(function(){
@@ -494,7 +494,7 @@
                 if(this.connection || this.form.Driver != 's7'){
                     if(this.validateForm()){
                         this.Loader.showLoader = true;
-                        this.form.Config = "ip=" + this.form.Ip +";port=" + this.form.port +";MasterDevice="+ this.form.MasterDevice +";HasReadGate="+ this.form.HasReadGate +";TestCardCode="+this.form.TestCardCode+";";
+                        this.form.Config = "ip=" + this.form.Ip +";port=" + this.form.Port +";MasterDevice="+ this.form.MasterDevice +";HasReadGate="+ this.form.HasReadGate +";TestCardCode="+this.form.TestCardCode+";";
                         this.form.Tags = this.Dynamic_params;
                         this.form.ContextName = this.$route.params.context;
     
