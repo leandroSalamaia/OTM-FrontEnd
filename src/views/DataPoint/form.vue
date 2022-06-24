@@ -5,6 +5,7 @@
                 <md-tabs md-dynamic-height>
                     <md-tab md-label="Conexão com o banco de dados">
                         <div class="md-layout-item md-size-100 md-small-size-100 mt-1">
+                            
                             <div class="md-layout">
                                 
                                 <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
@@ -53,11 +54,19 @@
                                     </md-field>
                                 </div>
                             </div>
-                            <md-button class="md-raised md-primary"  @click="TestConnection">Testar conexão</md-button>
-                            <!-- <md-button class="md-icon-button md-raised md-primary md-fixed">                           
-                                <md-icon><font-awesome-icon icon="database" /></md-icon>
-                            </md-button> -->
+                            
+                            
+                            
+                            <!--<md-button class="md-icon-button md-raised md-primary md-fixed">
+                                -->  
+                            <!-- </md-button>-->    
+                            <div class="md-layout-item md-size-100 md-small-size-100 mt-1"> 
+                                <md-button class="md-raised md-primary" @click="TestConnection " >Testar conexão</md-button>                        
+                                <md-icon class="mt-1"><font-awesome-icon icon="database" :color="GetColorIconDatabase()" /></md-icon>
+                            </div>
+
                         </div>
+                         
                     </md-tab>
 
                     <md-tab md-label="General">
@@ -540,6 +549,9 @@
                         });
                 }
             },
+            GetColorIconDatabase(){
+                return this.connection == true ? '#0AF426' : '#F71903'
+            }
         },
         created: function(){
             this.EditProps();
@@ -568,4 +580,5 @@
     .style-choser{
         height: 35px !important;
     }
+    
 </style>

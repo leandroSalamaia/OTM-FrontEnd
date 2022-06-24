@@ -21,18 +21,18 @@
                                         <label v-if="form.DataPointName == null">Data Point Name</label>
                                         <select name="DataPointName" id="DataPointNamea" autocomplete="Data Point Name para conexão" class="md-input" v-model="form.DataPointName" :disabled="sending">
                                             <option v-if="dataPoints.length < 1" disabled>Sem data points cadastrado</option>
-                                            <option v-for="dataPoint in dataPoints" :key="dataPoint.id" :value="dataPoint.name">{{dataPoint.name}}</option>
+                                            <option v-for="dataPoint in dataPoints" :key="dataPoint.id" :value="dataPoint.name" >{{dataPoint.name}}</option>
                                         </select>
                                         <span class="md-error" v-if="!$v.form.DataPointName.required">Data Point Name é um campo obrigatório</span>
                                         <span class="md-error" v-else-if="!$v.form.DataPointName.minlength">Tamanho Inválido</span>
                                     </md-field>
                                 </div>
 
-                                <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                <div class="md-layout-item md-size-30 md-small-size-100 mf-1"  v-if="form.TriggerType != 'OnScheduler'">
                                     <md-field :class="getValidationClass('TargetDeviceName')">
                                         <label v-if="form.TargetDeviceName == null">Device Name</label>
                                         <select name="TargetDeviceName" id="TargetDeviceName" autocomplete="Device Name para conexão" class="md-input" v-model="form.TargetDeviceName" :disabled="sending">
-                                             <option v-if="devices.length < 1" disabled>Sem devices cadastrado</option>
+                                            <option v-if="devices.length < 1" disabled>Sem devices cadastrado</option>
                                             <option v-for="device in devices" :key="device.id" :value="device.name">{{device.name}}</option>
                                         </select>
                                         <span class="md-error" v-if="!$v.form.TargetDeviceName.required">Device Name é um campo obrigatório</span>
@@ -44,8 +44,9 @@
                                     <md-field :class="getValidationClass('TriggerType')">
                                         <label v-if="form.TriggerType == null">Trigger Type</label>
                                         <select name="TriggerType" id="TriggerType" autocomplete="Trigger Type para conexão" class="md-input" v-model="form.TriggerType" :disabled="sending">
-                                            <option value="1">On Cycle</option>
-                                            <option value="2">On Tag Change</option>
+                                            <option value="OnCycle">On Cycle</option>
+                                            <option value="OnTagChange">On Tag Change</option>
+                                            <option value="OnScheduler">On Tag Scheduler</option>
                                         </select>
                                         <span class="md-error" v-if="!$v.form.TriggerType.required">Trigger Type é um campo obrigatório</span>
                                         <span class="md-error" v-else-if="!$v.form.TriggerType.minlength">Tamanho Inválido</span>
@@ -64,7 +65,7 @@
                         </div>
                     </md-tab>
 
-                    <md-tab md-label="Source Binds">
+                    <md-tab md-label="Source Binds" v-if="form.TriggerType != 'OnScheduler'">
                         <div class="md-layout-item md-size-100 md-small-size-100 mt-1">
                             <div class="md-layout">
 
@@ -103,7 +104,7 @@
                         </div>
                     </md-tab>
 
-                    <md-tab md-label="Target Binds">
+                    <md-tab md-label="Target Binds" v-if="form.TriggerType != 'OnScheduler'">
                         <div class="md-layout-item md-size-100 md-small-size-100 mt-1">
                             <div class="md-layout">
 
@@ -153,6 +154,7 @@
     import axios from 'axios';
     import {
         required,
+        requiredIf,
         minLength
     } from 'vuelidate/lib/validators';
     import { dynamicButton } from "@/components";
@@ -190,7 +192,8 @@
             loader: false,
             sending: false,
             dataPoints:[],
-            devices:[]
+            devices:[],
+            ScheluderDataPoint:[]
         }),
         validations: {
             form: {
@@ -200,25 +203,33 @@
                 },
                 DataPointName: {
                     required,
-                    minLength: minLength(8)
+                    minLength: minLength(5)
                 },
                 TargetDeviceName: {
-                    required,
+                    required:requiredIf(function(){
+                        return this.form.TriggerType != 'OnScheduler'
+                    }),
                     minLength: minLength(2)
                 },
                 TriggerType: {
-                    required,
+                required:requiredIf(function(){
+                        return this.form.TriggerType != 'OnScheduler'
+                    }),
                     minLength: minLength(1)
                 },
                 TriggerTagName: {
-                    required,
+                required:requiredIf(function(){
+                        return this.form.TriggerType != 'OnScheduler'
+                    }),
                     minLength: minLength(2)
                 }
             },
             Dynamic_params_SourceBinds:{               
                 $each: {
                     DataPointParam: {
-                        required,
+                    required:requiredIf(function(){
+                        return this.form.TriggerType != 'OnScheduler'
+                    }),
                         minLength: minLength(2)
                     },
                     Value: {
@@ -232,7 +243,9 @@
             Dynamic_params_TargetBinds:{ 
                 $each: {
                     DataPointParam: {
-                        required,
+                    required:requiredIf(function(){
+                        return this.form.TriggerType != 'OnScheduler'
+                    }),
                         minLength: minLength(2)
                     },
                     Value: {
@@ -245,7 +258,7 @@
             }
         },
         methods: { 
-            getValidationClass(fieldName) {
+            getValidationClass(fieldName) {                                
                 const field = this.$v.form[fieldName]
 
                 if (field) {
@@ -255,8 +268,6 @@
                 }
             },
             getValidationDynamicParamsClassSourceBinds(fieldName,index) {
-                console.log(fieldName)
-                console.log(index)
                 console.log( this.$v.Dynamic_params_SourceBinds.$each.$iter[index])
                 const field = this.$v.Dynamic_params_SourceBinds.$each.$iter[index][fieldName]
                 console.log(field)
@@ -278,6 +289,8 @@
             },
             validateForm() {
                 this.$v.$touch()
+
+                console.log(this.$v)
 
                 if (!this.$v.$invalid) {
                     return true;
@@ -313,7 +326,7 @@
                     this.form.Name =  this.edit.name;
                     this.form.DataPointName =  this.edit.dataPointName;
                     this.form.TargetDeviceName =  this.edit.targetDeviceName;
-                    this.form.TriggerType =  this.edit.triggerType == 'OnTagChange' ? 1 : 2;
+                    this.form.TriggerType =  this.edit.triggerType;
                     this.form.TriggerTagName =  this.edit.triggerTagName;
 
                     this.Dynamic_params_SourceBinds.pop();
@@ -344,7 +357,8 @@
                     })
                     .then(response => {
                         this.dataPoints = response.data.dataPoints;
-                        this.devices = response.data.devices           
+                        this.devices = response.data.devices
+                        this.ScheluderDataPoint = response.data.schedulerDataPoint           
                     });
             },
             Submit(){
@@ -385,8 +399,8 @@
             },
         },
         created: function(){
-            this.EditProps();
             this.getData();
+            this.EditProps();
         },
         watch: {
             '$route.params.context': function (){
