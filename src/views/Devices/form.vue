@@ -34,6 +34,17 @@
                                     </div>
 
                                     <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('TipoPtl')">
+                                            <label v-if="form.TipoPtl == null">Tipo de ptl</label>
+                                            <select name="Driver" id="TipoPtl" class="md-input" v-model="form.TipoPtl">
+                                                <option value="Atop">Atop</option>
+                                                <option value="Smart">Smart Picking</option>
+                                            </select>
+                                            <span class="md-error">Tipo de ptl é obrigatório</span>
+                                        </md-field>
+                                    </div>
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                         <md-field :class="getValidationClass('Ip')">
                                             <label>IP</label>
                                             <md-input name="Ip" id="Ip" autocomplete="IP para conexão" v-model="form.Ip" :disabled="sending" />
@@ -283,7 +294,7 @@
         data: () => ({
             form: {
                 Name: null,
-                Driver: 's7', 
+                Driver: 's7',  
                 HasReadGate: false,
                 Ip:null,
                 Port:null,
@@ -302,6 +313,7 @@
                 resultPath:null,
                 inputFileFilter:null
             },
+
 
             Dynamic_params:[
                 {
@@ -572,7 +584,7 @@
                         this.form.Host = conection_string[0].split('=').pop();
                         this.form.Slot = conection_string[1].split('=').pop();
                         this.form.Rack = conection_string[2].split('=').pop();
-                    }else if(this.form.Driver == 'ptl'){
+                    }else if(this.form.Driver == 'ptl') if(this.form.Driver == 'ptl'){
                         this.form.Ip = conection_string[0].split('=').pop();
                         this.form.Port = conection_string[1].split('=').pop();
                         this.form.MasterDevice = conection_string[2].split('=').pop();
