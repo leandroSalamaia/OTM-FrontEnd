@@ -29,6 +29,15 @@
                     </router-link>
                 </md-list>
 
+                <!-- <md-list>
+                    <router-link :to="{ name: 'pickToLight'}">
+                        <md-list-item>
+                            <md-icon><font-awesome-icon icon="grip-lines" /></md-icon>
+                            <span class="md-list-item-text">Pick To Light</span>
+                        </md-list-item>
+                    </router-link>
+                </md-list> -->
+
                 <md-list :md-expand-single="expandSingle" v-for="context in contexts" :key="context.name">
                     <md-list-item md-expand>
                         <md-icon><font-awesome-icon icon="list" /></md-icon>
@@ -36,51 +45,33 @@
                         
                         <md-list slot="md-expand">
                             <md-list :md-expand-single="expandSingle" class="md-sublist-item">
-                                <md-list-item md-expand>
-                                    <md-icon><font-awesome-icon icon="code" /></md-icon>
-                                    <span class="md-list-item-text">Data Point</span>
+                                <router-link :to="{ name: 'dataPoint', params: { context: context.name }}" v-if="context.mode == 'DataPoint'">
+                                    <md-list-item class="md-inset">
+                                        <md-icon><font-awesome-icon icon="file-code" /></md-icon>
+                                        <span class="md-list-item-text">Data Points</span>
+                                    </md-list-item>
+                                </router-link>
 
-                                    <md-list slot="md-expand">
-                                        <router-link :to="{ name: 'dataPoint', params: { context: context.name }}" >
-                                            <md-list-item class="md-inset">
-                                                <md-icon><font-awesome-icon icon="file-code" /></md-icon>
-                                                <span class="md-list-item-text">Data Points</span>
-                                            </md-list-item>
-                                        </router-link>
-                                        <!-- <md-list-item class="md-inset" href="#/executeDatapoint">
-                                            <md-icon><font-awesome-icon icon="terminal" /></md-icon>
-                                            <span class="md-list-item-text">Executar</span>
-                                        </md-list-item> -->
-                                    </md-list>
-                                </md-list-item>
+                                <router-link :to="{ name: 'workers', params: { context: context.name }}" v-else>
+                                    <md-list-item class="md-inset">
+                                        <md-icon><font-awesome-icon icon="cogs" /></md-icon>
+                                        <span class="md-list-item-text">Scheluder</span>
+                                    </md-list-item>
+                                </router-link>
 
-                                <md-list-item md-expand>
-                                    <md-icon><font-awesome-icon icon="server" /></md-icon>
-                                    <span class="md-list-item-text">Device</span>
-                                    
-                                    <md-list slot="md-expand">
-                                        <router-link :to="{ name: 'devices', params: { context: context.name }}" >
-                                                <md-list-item class="md-inset">
-                                                    <md-icon><font-awesome-icon icon="align-justify" /></md-icon>
-                                                    <span class="md-list-item-text">Devices</span>
-                                                </md-list-item>
-                                        </router-link>
-                                    </md-list>
-                                </md-list-item>
+                                <router-link :to="{ name: 'devices', params: { context: context.name }}" >
+                                        <md-list-item class="md-inset">
+                                            <md-icon><font-awesome-icon icon="align-justify" /></md-icon>
+                                            <span class="md-list-item-text">Devices</span>
+                                        </md-list-item>
+                                </router-link>
 
-                                <md-list-item md-expand>
-                                    <md-icon><font-awesome-icon icon="exchange-alt" /></md-icon>
-                                    <span class="md-list-item-text">Transaction</span>
-                                    
-                                    <md-list slot="md-expand">
-                                        <router-link :to="{ name: 'transactions', params: { context: context.name }}" >
-                                                <md-list-item class="md-inset">
-                                                    <md-icon><font-awesome-icon icon="sync-alt" /></md-icon>
-                                                    <span class="md-list-item-text">Transactions</span>
-                                                </md-list-item>
-                                        </router-link>
-                                    </md-list>
-                                </md-list-item>
+                                <router-link :to="{ name: 'transactions', params: { context: context.name }}" >
+                                        <md-list-item class="md-inset">
+                                            <md-icon><font-awesome-icon icon="sync-alt" /></md-icon>
+                                            <span class="md-list-item-text">Transactions</span>
+                                        </md-list-item>
+                                </router-link>
 
                             </md-list>
                         </md-list>
@@ -150,8 +141,8 @@
         background-color: #0e316b !important;
     }
 
-    .md-sublist-item > .md-list-item-content{
-       padding-left: 64px !important;
+    .md-list-item.md-inset .md-list-item-content {
+        padding-left: 40px !important;
     }
     
 </style>

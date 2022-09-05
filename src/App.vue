@@ -1,11 +1,14 @@
 <template>
     <div id="app">
-        <div>
+        <div v-if="$route.name != 'login'">
             <loader/>
             <NavBar><router-view slot="content" /></NavBar>
             <md-content>
 
             </md-content>
+        </div>
+        <div v-else>
+            <router-view slot="content" />
         </div>
 
     </div>

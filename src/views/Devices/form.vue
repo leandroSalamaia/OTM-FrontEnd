@@ -11,8 +11,10 @@
                                     <md-field :class="getValidationClass('Driver')">
                                         <label v-if="form.Driver == null">Driver</label>
                                         <select name="Driver" id="Driver" class="md-input" v-model="form.Driver">
-                                            <option value="ptl">ptl</option>
-                                            <option value="s7">s7</option>
+                                            <option value="ptl">PTL</option>
+                                            <option value="s7">S7</option>
+                                            <option value="RabbitMq">RabbitMq</option>
+                                            <option value="File">File</option>
                                         </select>
                                         <span class="md-error">Driver é obrigatório</span>
                                     </md-field>
@@ -20,6 +22,17 @@
                             </div>
 
                                 <div class="md-layout" v-if="form.Driver == 'ptl'">
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('TipoPtl')">
+                                            <label v-if="form.TipoPtl == null">Tipo de ptl</label>
+                                            <select name="Driver" id="TipoPtl" class="md-input" v-model="form.TipoPtl">
+                                                <option value="Atop">Atop</option>
+                                                <option value="Smart">Smart Picking</option>
+                                            </select>
+                                            <span class="md-error">Tipo de ptl é obrigatório</span>
+                                        </md-field>
+                                    </div>
+
                                     <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                         <md-field :class="getValidationClass('Ip')">
                                             <label>IP</label>
@@ -65,11 +78,11 @@
                                     </div>
                                 </div>
 
-                                <div class="md-layout" v-else>
+                                <div class="md-layout" v-if=" form.Driver == 's7' ">
                                     <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                         <md-field :class="getValidationClass('Host')">
                                             <label>Host</label>
-                                            <md-input name="Ip" id="Ip" autocomplete="IP para conexão" v-model="form.Host" :disabled="sending" />
+                                            <md-input name="Host" id="Host" autocomplete="Host para conexão" v-model="form.Host" :disabled="sending" />
                                             <span class="md-error" v-if="!$v.form.Host.required">Host é um campo obrigatório</span>
                                             <span class="md-error" v-else-if="!$v.form.Host.minlength">Tamanho Inválido</span>
                                         </md-field>
@@ -78,7 +91,7 @@
                                     <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                         <md-field :class="getValidationClass('Rack')">
                                             <label>Rack</label>
-                                            <md-input name="Ip" id="Ip" autocomplete="IP para conexão" v-model="form.Rack" :disabled="sending" />
+                                            <md-input name="Rack" id="Rack" autocomplete="Rack para conexão" v-model="form.Rack" :disabled="sending" />
                                             <span class="md-error" v-if="!$v.form.Rack.required">Rack é um campo obrigatório</span>
                                             <span class="md-error" v-else-if="!$v.form.Rack.minlength">Tamanho Inválido</span>
                                         </md-field>
@@ -87,13 +100,85 @@
                                     <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
                                         <md-field :class="getValidationClass('Slot')">
                                             <label>Slot</label>
-                                            <md-input name="Ip" id="Ip" autocomplete="IP para conexão" v-model="form.Slot" :disabled="sending" />
+                                            <md-input name="Slot" id="Slot" autocomplete="Slot para conexão" v-model="form.Slot" :disabled="sending" />
                                             <span class="md-error" v-if="!$v.form.Slot.required">Slot é um campo obrigatório</span>
                                             <span class="md-error" v-else-if="!$v.form.Slot.minlength">Tamanho Inválido</span>
                                         </md-field>
                                     </div>
                                 </div>
+
+                                <div class="md-layout" v-if="form.Driver=='RabbitMq'">
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('HostRabbit')">
+                                            <label>Host</label>
+                                            <md-input name="Host Rabbit" id="HostRabbit" autocomplete="Host Rabbit para conexão" v-model="form.HostRabbit" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.HostRabbit.required">Host é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.HostRabbit.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('PortRabbit')">
+                                            <label>Porta</label>
+                                            <md-input name="PortRabbit" id="PortRabbit" autocomplete="Porta Rabbit para conexão" v-model="form.PortRabbit" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.PortRabbit.required">Porta é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.PortRabbit.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('Exchange')">  
+                                            <label>Exchange</label>
+                                            <md-input name="Exchange" id="Exchange" autocomplete="Exchange para conexão" v-model="form.Exchange" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.Exchange.required">Exchange é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.Exchange.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+                                </div>
+
+                                <div class="md-layout" v-if="form.Driver == 'File'">
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('inputPath')">
+                                            <label>Input Path</label>
+                                            <md-input name="inputPath" id="inputPath" autocomplete="inputPath para conexão" v-model="form.inputPath" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.inputPath.required">inputPath é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.inputPath.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('outputPath')">
+                                            <label>Output Path</label>
+                                            <md-input name="outputPath" id="outputPath" autocomplete="outputPath para conexão" v-model="form.outputPath" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.outputPath.required">outputPath é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.outputPath.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('resultPath')">
+                                            <label>Result Path</label>
+                                            <md-input name="resultPath" id="resultPath" autocomplete="resultPath para conexão" v-model="form.resultPath" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.resultPath.required">resul tPath é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.resultPath.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+
+                                    <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                                        <md-field :class="getValidationClass('inputFileFilter')">
+                                            <label>Input File Filter</label>
+                                            <md-input name="inputFileFilter" id="inputFileFilter" autocomplete="inputFileFilter para conexão" v-model="form.inputFileFilter" :disabled="sending" />
+                                            <span class="md-error" v-if="!$v.form.inputFileFilter.required">inputFileFilter é um campo obrigatório</span>
+                                            <span class="md-error" v-else-if="!$v.form.inputFileFilter.minlength">Tamanho Inválido</span>
+                                        </md-field>
+                                    </div>
+                                </div>
+                                
+
+                                
                             <md-button class="md-raised md-primary" v-if="form.Driver == 's7'" @click="TestConnection">Testar conexão</md-button>
+                            <md-button class="md-raised md-primary" v-if="form.Driver == 'RabbitMq'" @click="TestConnection">Testar conexão</md-button>
                         </div>
                     </md-tab>
 
@@ -198,7 +283,7 @@
         data: () => ({
             form: {
                 Name: null,
-                Driver: 's7',
+                Driver: 's7', 
                 HasReadGate: false,
                 Ip:null,
                 Port:null,
@@ -207,8 +292,17 @@
                 Tags: null,
                 Host:null,
                 Slot:null,
-                Rack:null
+                Rack:null,
+                Exchange:null,   // ALTERACAO
+                PortRabbit:null, // ALTERACAO
+                HostRabbit:null, // ALTERACAO
+                TipoPtl: 'Atop',
+                inputPath: null,
+                outputPath:null,
+                resultPath:null,
+                inputFileFilter:null
             },
+
             Dynamic_params:[
                 {
                     Name:null,
@@ -220,7 +314,7 @@
             ],
             loader: false,
             sending: false,
-            connection:false,
+            connection:true,
             TypeCodes:[
                 {
                     name: 'Empty',
@@ -301,7 +395,7 @@
             form: {
                 Name: {
                     required:requiredIf(function(){
-                        return this.connection == true || this.form.Driver != 's7'
+                        return this.connection == true || this.form.Driver != 's7' || this.form.Driver != 'RabbitMq'  //ALTERACAO
                     }),
                     minLength: minLength(3)
                 },
@@ -311,12 +405,28 @@
                     }),
                     minLength: minLength(8)
                 },
+                
                 Port: {
                     required:requiredIf(function(){
                         return this.form.Driver == 'ptl'
                     }),
                     minLength: minLength(2)
                 },
+
+                PortRabbit: { // ALTERACAO
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'RabbitMq'
+                    }),
+                    minLength: minLength(2)
+                },
+
+                Exchange: { // ALTERACAO
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'RabbitMq'
+                    }),
+                    minLength: minLength(8)
+                },
+
                 MasterDevice: {
                     required:requiredIf(function(){
                         return this.form.Driver == 'ptl'
@@ -335,6 +445,13 @@
                     }),
                     minLength: minLength(3)
                 },
+
+                HostRabbit: { // ALTERACAO
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'RabbitMq'
+                    }),
+                    minLength: minLength(3)
+                },
                 Slot: {
                     required:requiredIf(function(){
                         return this.form.Driver == 's7'
@@ -344,6 +461,30 @@
                 Rack: {
                     required:requiredIf(function(){
                         return this.form.Driver == 's7'
+                    }),
+                    minLength: minLength(1)
+                },
+                inputPath: {
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'File'
+                    }),
+                    minLength: minLength(1)
+                },
+                outputPath:{
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'File'
+                    }),
+                    minLength: minLength(1)
+                },
+                resultPath:{
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'File'
+                    }),
+                    minLength: minLength(1)
+                },
+                inputFileFilter:{
+                    required:requiredIf(function(){
+                        return this.form.Driver == 'File'
                     }),
                     minLength: minLength(1)
                 },
@@ -431,12 +572,21 @@
                         this.form.Host = conection_string[0].split('=').pop();
                         this.form.Slot = conection_string[1].split('=').pop();
                         this.form.Rack = conection_string[2].split('=').pop();
-                    }else{
+                    }else if(this.form.Driver == 'ptl'){
                         this.form.Ip = conection_string[0].split('=').pop();
                         this.form.Port = conection_string[1].split('=').pop();
                         this.form.MasterDevice = conection_string[2].split('=').pop();
                         this.form.HasReadGate = conection_string[3].split('=').pop().toLowerCase();
                         this.form.TestCardCode = conection_string[4].split('=').pop();
+                    }else if(this.form.Driver == 'RabbitMq'){
+                        this.form.HostRabbit = conection_string[0].split('=').pop(); //ALTERAÇÕES ************
+                        this.form.PortRabbit = conection_string[1].split('=').pop();
+                        this.form.Exchange = conection_string[2].split('=').pop();
+                    }else if(this.form.Driver == 'File'){
+                        this.form.inputPath = conection_string[0].split('=').pop(); //ALTERAÇÕES ************
+                        this.form.outputPath = conection_string[1].split('=').pop();
+                        this.form.resultPath = conection_string[2].split('=').pop();
+                        this.form.inputFileFilter = conection_string[3].split('=').pop();
                     }
 
                     this.Dynamic_params.pop();
@@ -459,8 +609,10 @@
                     let method = '';
                     if(this.form.Driver == 'ptl'){
                         method = "TestConnectionPtl"
-                    }else{
+                    }else if (this.form.Driver == 's7') { //ALTERACAO
                         method = "TestConnectionS7"
+                    } else if(this.form.Driver == 'RabbitMq'){
+                        method = "TestConnectionRabbit" 
                     }
 
                     axios
@@ -491,13 +643,19 @@
                 }
             },
             Submit(){
-                if(this.connection || this.form.Driver != 's7'){
-                    if(this.validateForm()){
-                        this.Loader.showLoader = true;
-                        this.form.Config = "ip=" + this.form.Ip +";port=" + this.form.Port +";MasterDevice="+ this.form.MasterDevice +";HasReadGate="+ this.form.HasReadGate +";TestCardCode="+this.form.TestCardCode+";";
-                        this.form.Tags = this.Dynamic_params;
-                        this.form.ContextName = this.$route.params.context;
-    
+                if(this.connection && this.validateForm()){  //ALTERACAO
+                    this.Loader.showLoader = true;
+                    this.form.ContextName = this.$route.params.context;
+                    this.form.Tags = this.Dynamic_params;
+                    if(this.form.Driver == 'ptl'){
+                        this.form.Config = "ip=" + this.form.Ip +"; Porta=" + this.form.Port +"; MasterDevice="+ this.form.MasterDevice +"; HasReadGate="+ this.form.HasReadGate +"; TestCardCode="+this.form.TestCardCode+";";
+                    }else if(this.form.Driver == 's7'){
+                        this.form.Config = "Host=" + this.form.Host+"; Rack= " + this.form.Rack +"; Slot="+ this.form.Slot+";"; 
+                    }else if(this.form.Driver == 'RabbitMq'){
+                        this.form.Config = "HostRabbit=" + this.form.HostRabbit+"; PortRabbit= " + this.form.PortRabbit +"; Exchange="+ this.form.Exchange+";"; 
+                    }else if(this.form.Driver == 'File'){
+                        this.form.Config = "inputPath=" + this.form.inputPath+"; outputPath= " + this.form.outputPath +"; resultPath="+ this.form.resultPath+";" + "; inputFileFilter="+ this.form.inputFileFilter+";"; 
+                    }
                         axios
                             .post('/api/Device',JSON.stringify(this.form),{
                                 headers:{
@@ -525,7 +683,7 @@
                                     })
                                 }                           
                             });
-                    }
+                    
                 }else{
                     this.$swal({
                         position: 'top-end',

@@ -2,33 +2,23 @@
     <div>
         <form novalidate class="md-layout" @submit.prevent="validateForm">
             <div class="md-layout">
-                <div class="md-layout-item md-size-100 md-small-size-100 mt-1">
-                    <div class="md-layout"> 
-
-                        <div class="md-layout-item md-size-100 md-small-size-100 mf-1">
-                            <md-field :class="getValidationClass('Server')">
-                                <label>Nome</label>
-                                <md-input name="name" id="name" v-model="form.Name" :disabled="sending" />
-                                <span class="md-error" v-if="!$v.form.Name.required">nome é um campo obrigatório</span>
-                                <span class="md-error" v-else-if="!$v.form.Name.minlength">Tamanho Inválido</span>
+                <div class="md-layout-item md-size-100 md-small-size-100 mt-1">                          
+                    <div class="md-layout">
+                        <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                            <md-field :class="getValidationClass('User')">
+                                <label>User</label>
+                                <md-input name="User" id="User" autocomplete="Usuário de acesso" v-model="form.User" :disabled="sending" />
+                                <span class="md-error" v-if="!$v.form.User.required">User é um campo obrigatório</span>
+                                <span class="md-error" v-else-if="!$v.form.User.minlength">Tamanho Inválido</span>
                             </md-field>
                         </div>
 
-                        <div class="md-layout-item md-size-100 md-small-size-100">
-                            <md-field :class="getValidationClass('Mode')">
-                                <select v-model="form.Mode" id="Mode" class="md-input">
-                                    <option value="DataPoint" selected>Data Point</option>
-                                    <option value="ScheluderDataPoint">Scheluder Data Point</option>
-                                </select>
-                            </md-field>
-                        </div>
-
-                        <div class="md-layout-item md-size-100 md-small-size-100 mf-1">
-                            <md-field :class="getValidationClass('Logger')">
-                                <label>Logger</label>
-                                <md-input name="Logger" id="Logger" autocomplete="Nome do Logger" v-model="form.Logger" :disabled="sending" />
-                                <span class="md-error" v-if="!$v.form.Logger.required">Logger é um campo obrigatório</span>
-                                <span class="md-error" v-else-if="!$v.form.Logger.minlength">Tamanho Inválido</span>
+                        <div class="md-layout-item md-size-30 md-small-size-100 mf-1">
+                            <md-field :class="getValidationClass('Password')">
+                                <label>Password</label>
+                                <md-input name="Password" id="Password" autocomplete="Senha de acesso" v-model="form.Password" :disabled="sending" />
+                                <span class="md-error" v-if="!$v.form.Password.required">Password é um campo obrigatório</span>
+                                <span class="md-error" v-else-if="!$v.form.Password.minlength">Tamanho Inválido</span>
                             </md-field>
                         </div>
                     </div>
@@ -43,36 +33,27 @@
     import { validationMixin } from 'vuelidate';
     import axios from 'axios';
     import {
-        required,
-        minLength
+        required
     } from 'vuelidate/lib/validators';
 
     export default {
-        mixins: [validationMixin],
-        props: ['edit'],       
+        mixins: [validationMixin],       
         data: () => ({
             form: {
-                Name: null,
-                Enabled: false,
-                Mode: "DataPoint",
-                Logger: null
+                User:null,
+                Password:null
             },
             loader: false,
-            sending: false
-
         }),
         validations: {
             form: {
-                Name: {
-                    required,
-                    minLength: minLength(3)
+                User: {
+                    required
                 },
-                Logger: {
-                    required,
-                    minLength: minLength(2)
+                Password: {
+                    required
                 }
             }
-
         },
         methods: { 
             getValidationClass(fieldName) {
@@ -91,19 +72,17 @@
                     return true;
                 }
             },
-            EditProps(){
-                if(this.edit){
-                    this.form.Name =  this.edit.name;
-                    this.form.Enabled =  this.edit.status;
-                    this.form.Mode =  this.edit.mode;
-                    this.form.Logger =  this.edit.logger;
-                }
-            },
             Submit(){
                 if(this.validateForm()){
                     this.Loader.showLoader = true;
+                    let storedProcedure = this.storedProcedures.find(e => e.object_id == this.form.Name)
+                    this.form.Config = "Server=" + this.form.Server +"; Database=" + this.form.Password +"; User ID="+ this.form.User +";Password="+ this.form.Password +";";
+                    this.form.Params = this.Dynamic_params;
+                    this.form.Name = !storedProcedure.name? this.form.Name : storedProcedure.name;
+                    this.form.ContextName= this.$route.params.context;
+
                     axios
-                        .post('/api/Context',JSON.stringify(this.form),{
+                        .post('/api/DataPoint',JSON.stringify(this.form),{
                             headers:{
                                 'Content-Type': 'application/json',
                             }
@@ -125,15 +104,12 @@
                                     position: 'top-end',
                                     icon: 'error',
                                     title: 'Erro...',
-                                    text: "Falha ao cadastrar context.",
+                                    text: "Falha ao cadastrar data point.",
                                 })
                             }                           
                         });
                 }
-            },
-        },
-        created: function(){
-            this.EditProps();
+            }
         }
     }
 </script>
@@ -159,4 +135,5 @@
     .style-choser{
         height: 35px !important;
     }
+    
 </style>
